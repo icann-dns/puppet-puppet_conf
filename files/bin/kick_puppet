@@ -1,0 +1,23 @@
+#!/bin/sh
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin
+PUPPET_LOCK=`puppet config print agent_catalog_run_lockfile`
+OS=`uname`
+NOW=`date +%s`
+if [ "${OS}" = "FreeBSD" ]
+then
+  STAT='stat -L -f %m '
+else
+  STAT='stat -L --format %Y '
+fi
+if [ -e ${PUPPET_LOCK} ]
+then
+  RUN_START=`${STAT} ${PUPPET_LOCK}`
+  ELAPSED=`expr ${NOW} - ${RUN_START}`
+  if [ ${ELAPSED} -gt 3600 ]
+  then
+    kill -9 `cat ${PUPPET_LOCK}`
+  fi
+fi
+
+service puppet status > /dev/null || service puppet start
+

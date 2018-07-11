@@ -95,7 +95,7 @@ class puppet_conf (
   file {'/usr/local/bin/kick_puppet':
     ensure => file,
     mode   => '0555',
-    source => 'puppet:///modules/puppet_conf/usr/local/bin/kick_puppet',
+    source => 'puppet:///modules/puppet_conf/bin/kick_puppet',
   }
   cron {'puppet_conf: Kick puppet':
     ensure  => present,
