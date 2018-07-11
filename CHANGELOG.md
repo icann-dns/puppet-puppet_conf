@@ -1,6 +1,5 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
+## Release 0.1.1
+* forgot to include kick\_puppet script
 
 ## Release 0.1.0
 * initial migration from icann-puppet
