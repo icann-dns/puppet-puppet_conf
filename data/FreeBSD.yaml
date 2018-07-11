@@ -1,0 +1,6 @@
+---
+puppet_conf::owner: puppet
+puppet_conf::group: puppet
+puppet_conf::puppet_state_dir: /var/puppet/state
+puppet_conf::confdir: /usr/local/etc/puppet
+puppet_conf::environments_path: /usr/local/etc/puppet/environments
