@@ -1,3 +1,6 @@
+## Release 0.1.3
+* update hedgehog\_ca path
+
 ## Release 0.1.2
 * remove managment of environemnets directory
 
