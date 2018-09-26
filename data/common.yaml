@@ -8,6 +8,6 @@ puppet_conf::server: ~
 puppet_conf::dns_alt_names: []
 puppet_conf::purge_modules: []
 puppet_conf::environments_path: /etc/puppetlabs/code/environments
-puppet_conf::hedgehoog_ca_path: "%{hiera('puppet_conf::environments_path')}/hedgehog-ca/ca"
+puppet_conf::hedgehoog_ca_path: "%{hiera('puppet_conf::environments_path')}/hedgehog_ca_master/ca"
 puppet_conf::enable_nagios: false
 puppet_conf::environment_override: ~
