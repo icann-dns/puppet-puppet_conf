@@ -119,14 +119,6 @@ class puppet_conf (
       setting => 'certname',
       value   => $::fqdn,
     }
-    file { $environments_path:
-      ensure  => directory,
-      owner   => 'peadmin',
-      group   => 'peadmin',
-      mode    => '0777',
-      recurse => false,
-      purge   => false,
-    }
     augeas { 'fileserver ca mount':
       incl      => $fileserver_conf,
       lens      => 'PuppetFileserver.lns',
