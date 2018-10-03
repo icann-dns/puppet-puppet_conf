@@ -95,7 +95,7 @@ describe 'puppet_conf' do
           is_expected.to contain_file('/usr/local/bin/kick_puppet').with(
             ensure: 'file',
             mode: '0555',
-            source: 'puppet:///modules/puppet_conf/usr/local/bin/kick_puppet',
+            source: 'puppet:///modules/puppet_conf/bin/kick_puppet',
           )
         end
         it do
@@ -223,22 +223,12 @@ describe 'puppet_conf' do
             )
           end
           it do
-            is_expected.to contain_file(environments_path).with(
-              ensure: 'directory',
-              owner: 'peadmin',
-              group: 'peadmin',
-              mode: '0777',
-              recurse: false,
-              purge: false,
-            )
-          end
-          it do
             is_expected.to contain_augeas('fileserver ca mount').with(
               incl: "#{confdir}/fileserver.conf",
               lens: 'PuppetFileserver.lns',
               load_path: '/opt/puppet/share/augeas/lenses/dist',
               changes: [
-                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/path #{environments_path}/hedgehog-ca/ca",
+                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/path #{environments_path}/hedgehog_ca_master/ca",
                 "set /files/#{confdir}/fileserver.conf/hedgehog_ca/allow *",
               ],
             )

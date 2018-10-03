@@ -1,3 +1,6 @@
+## Release 0.2.0
+* Change how we disable nagios services
+
 ## Release 0.1.3
 * update hedgehog\_ca path
 

@@ -41,10 +41,13 @@ class puppet_conf (
   Optional[String]               $environment_override,
 ) {
 
-  if $environment_override {
-    $_environment = $environment_override
-  } else {
-    $_environment = $::environment
+  $_environment = $environment_override ? {
+    undef   => $::environment,
+    default => $environment_override
+  }
+  $nagios_ensure = $enable_nagios ? {
+    true    => 'present',
+    default => 'absent',
   }
   $puppet_conf     = "${confdir}/puppet.conf"
   $fileserver_conf = "${confdir}/fileserver.conf"
@@ -133,20 +136,18 @@ class puppet_conf (
     ensure => running,
     enable => true,
   }
-  if $enable_nagios {
-    @@nagios_service{ "${::fqdn}-PUPPET_ENV":
-      ensure              => present,
-      use                 => 'generic-service',
-      host_name           => $::fqdn,
-      service_description => 'PUPPET_ENV',
-      check_command       => 'check_nrpe!check_puppet_environment',
-    }
-    @@nagios_service{ "${::fqdn}-PUPPET_LASTRUN":
-      ensure              => present,
-      use                 => 'generic-service',
-      host_name           => $::fqdn,
-      service_description => 'PUPPET_LASTRUN',
-      check_command       => 'check_nrpe!check_puppet_lastrun',
-    }
+  @@nagios_service{ "${::fqdn}-PUPPET_ENV":
+    ensure              => $nagios_ensure,
+    use                 => 'generic-service',
+    host_name           => $::fqdn,
+    service_description => 'PUPPET_ENV',
+    check_command       => 'check_nrpe!check_puppet_environment',
+  }
+  @@nagios_service{ "${::fqdn}-PUPPET_LASTRUN":
+    ensure              => $nagios_ensure,
+    use                 => 'generic-service',
+    host_name           => $::fqdn,
+    service_description => 'PUPPET_LASTRUN',
+    check_command       => 'check_nrpe!check_puppet_lastrun',
   }
 }
