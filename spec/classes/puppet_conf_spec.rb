@@ -10,7 +10,6 @@ describe 'puppet_conf' do
       # confdir: nil,
       # puppet_state_dir: nil,
       # puppet_master: nil,
-      server: 'master.example.com',
       # dns_alt_names: nil,
       # hedgehoog_ca_path: nil,
       # enable_nagios: nil,
@@ -81,13 +80,6 @@ describe 'puppet_conf' do
             path: "#{confdir}/puppet.conf",
             setting: 'certname',
             value: 'foobar.example.com',
-          )
-        end
-        it do
-          is_expected.to contain_ini_setting('puppet_conf_server').with(
-            path: "#{confdir}/puppet.conf",
-            setting: 'server',
-            value: 'master.example.com',
           )
         end
         it { is_expected.not_to contain_ini_setting('puppet_dns_alt_names') }
@@ -187,11 +179,6 @@ describe 'puppet_conf' do
               '/foo/bar/puppet.conf',
             )
           end
-          it do
-            is_expected.to contain_ini_setting('puppet_conf_server').with_path(
-              '/foo/bar/puppet.conf',
-            )
-          end
         end
         context 'puppet_state_dir' do
           before(:each) { params.merge!(puppet_state_dir: '/foo/bar') }
@@ -231,17 +218,6 @@ describe 'puppet_conf' do
                 "set /files/#{confdir}/fileserver.conf/hedgehog_ca/path #{environments_path}/hedgehog_ca_master/ca",
                 "set /files/#{confdir}/fileserver.conf/hedgehog_ca/allow *",
               ],
-            )
-          end
-        end
-        context 'server' do
-          before(:each) { params.merge!(server: 'foobar') }
-          it { is_expected.to compile }
-          it do
-            is_expected.to contain_ini_setting('puppet_conf_server').with(
-              path: "#{confdir}/puppet.conf",
-              setting: 'server',
-              value: 'foobar',
             )
           end
         end
@@ -340,10 +316,6 @@ describe 'puppet_conf' do
         end
         context 'puppet_master' do
           before(:each) { params.merge!(puppet_master: 'foobar') }
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-        context 'server' do
-          before(:each) { params.merge!(server: true) }
           it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'dns_alt_names' do

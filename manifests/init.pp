@@ -12,8 +12,6 @@
 #   the location of the puppet state files
 # @param puppet_master
 #   indicates if the server is a puppet master
-# @param server
-#   puppet master domainname
 # @param dns_alt_names
 #   Array of alternet DNS names to add to the csr
 # @param hedgehoog_ca_path
@@ -33,7 +31,6 @@ class puppet_conf (
   Stdlib::Absolutepath           $confdir,
   Stdlib::Absolutepath           $puppet_state_dir,
   Boolean                        $puppet_master,
-  Stdlib::Fqdn                   $server,
   Optional[Array[Stdlib::Fqdn]]  $dns_alt_names,
   Stdlib::Absolutepath           $environments_path,
   Stdlib::Absolutepath           $hedgehoog_ca_path,
@@ -85,9 +82,6 @@ class puppet_conf (
     'puppet_conf_certname':
       setting => 'certname',
       value   => $::fqdn;
-    'puppet_conf_server':
-      setting => 'server',
-      value   => $server;
   }
   if ! empty($dns_alt_names) {
     ini_setting {'puppet_dns_alt_names':
