@@ -251,34 +251,34 @@ describe 'puppet_conf' do
             )
           end
         end
-        context 'enable_nagios' do
-          before(:each) { params.merge!(enable_nagios: true) }
-          subject { exported_resources }
-
-          it { is_expected.to compile }
-          it do
-            is_expected.to contain_nagios_service(
-              'foobar.example.com-PUPPET_ENV',
-            ).with(
-              ensure: 'present',
-              use: 'generic-service',
-              host_name: 'foobar.example.com',
-              service_description: 'PUPPET_ENV',
-              check_command: 'check_nrpe!check_puppet_environment',
-            )
-          end
-          it do
-            is_expected.to contain_nagios_service(
-              'foobar.example.com-PUPPET_LASTRUN',
-            ).with(
-              ensure: 'present',
-              use: 'generic-service',
-              host_name: 'foobar.example.com',
-              service_description: 'PUPPET_LASTRUN',
-              check_command: 'check_nrpe!check_puppet_lastrun',
-            )
-          end
-        end
+#        context 'enable_nagios' do
+#          before(:each) { params.merge!(enable_nagios: true) }
+#          subject { exported_resources }
+#
+#          it { is_expected.to compile }
+#          it do
+#            is_expected.to contain_nagios_service(
+#              'foobar.example.com-PUPPET_ENV',
+#            ).with(
+#              ensure: 'present',
+#              use: 'generic-service',
+#              host_name: 'foobar.example.com',
+#              service_description: 'PUPPET_ENV',
+#              check_command: 'check_nrpe!check_puppet_environment',
+#            )
+#          end
+#          it do
+#            is_expected.to contain_nagios_service(
+#              'foobar.example.com-PUPPET_LASTRUN',
+#            ).with(
+#              ensure: 'present',
+#              use: 'generic-service',
+#              host_name: 'foobar.example.com',
+#              service_description: 'PUPPET_LASTRUN',
+#              check_command: 'check_nrpe!check_puppet_lastrun',
+#            )
+#          end
+#        end
         context 'environment_override' do
           before(:each) { params.merge!(environment_override: 'foobar') }
           it { is_expected.to compile }

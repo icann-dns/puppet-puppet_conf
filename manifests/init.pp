@@ -130,18 +130,18 @@ class puppet_conf (
     ensure => running,
     enable => true,
   }
-  @@nagios_service{ "${::fqdn}-PUPPET_ENV":
-    ensure              => $nagios_ensure,
-    use                 => 'generic-service',
-    host_name           => $::fqdn,
-    service_description => 'PUPPET_ENV',
-    check_command       => 'check_nrpe!check_puppet_environment',
-  }
-  @@nagios_service{ "${::fqdn}-PUPPET_LASTRUN":
-    ensure              => $nagios_ensure,
-    use                 => 'generic-service',
-    host_name           => $::fqdn,
-    service_description => 'PUPPET_LASTRUN',
-    check_command       => 'check_nrpe!check_puppet_lastrun',
-  }
+#  @@nagios_service{ "${::fqdn}-PUPPET_ENV":
+#    ensure              => $nagios_ensure,
+#    use                 => 'generic-service',
+#    host_name           => $::fqdn,
+#    service_description => 'PUPPET_ENV',
+#    check_command       => 'check_nrpe!check_puppet_environment',
+#  }
+#  @@nagios_service{ "${::fqdn}-PUPPET_LASTRUN":
+#    ensure              => $nagios_ensure,
+#    use                 => 'generic-service',
+#    host_name           => $::fqdn,
+#    service_description => 'PUPPET_LASTRUN',
+#    check_command       => 'check_nrpe!check_puppet_lastrun',
+#  }
 }
