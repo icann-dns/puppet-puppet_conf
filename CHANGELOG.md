@@ -1,5 +1,8 @@
+## Release 0.4.0
+* Remove nagios and hedgehog pieces
+
 ## Release 0.3.0
-* Dont manage the the server setting any more as this is managed by puppet enterprise
+* Dont manage the server setting any more as this is managed by puppet enterprise
 
 ## Release 0.2.0
 * Change how we disable nagios services
