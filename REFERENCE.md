@@ -65,19 +65,6 @@ Data type: `Optional[Array[Stdlib::Fqdn]]`
 
 Array of alternet DNS names to add to the csr
 
-##### `hedgehoog_ca_path`
-
-Data type: `Stdlib::Absolutepath`
-
-location of the hedghog ca directory, this is configuered
-as an alternet location in puppet
-
-##### `enable_nagios`
-
-Data type: `Boolean`
-
-indicates if we should export nagios\_service types
-
 ##### `environment_override`
 
 Data type: `Optional[String]`

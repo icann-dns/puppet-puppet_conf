@@ -14,13 +14,6 @@
 #   indicates if the server is a puppet master
 # @param dns_alt_names
 #   Array of alternet DNS names to add to the csr
-# @param hedgehoog_ca_path
-#   location of the puppet environments
-# @param hedgehoog_ca_path
-#   location of the hedghog ca directory, this is configuered 
-#   as an alternet location in puppet
-# @param enable_nagios
-#   indicates if we should export nagios\_service types
 # @param environment_override
 #   an environment to explicitly set the node to
 #
@@ -33,18 +26,12 @@ class puppet_conf (
   Boolean                        $puppet_master,
   Optional[Array[Stdlib::Fqdn]]  $dns_alt_names,
   Stdlib::Absolutepath           $environments_path,
-  Stdlib::Absolutepath           $hedgehoog_ca_path,
-  Boolean                        $enable_nagios,
   Optional[String]               $environment_override,
 ) {
 
   $_environment = $environment_override ? {
     undef   => $::environment,
     default => $environment_override
-  }
-  $nagios_ensure = $enable_nagios ? {
-    true    => 'present',
-    default => 'absent',
   }
   $puppet_conf     = "${confdir}/puppet.conf"
   $fileserver_conf = "${confdir}/fileserver.conf"
@@ -116,32 +103,9 @@ class puppet_conf (
       setting => 'certname',
       value   => $::fqdn,
     }
-    augeas { 'fileserver ca mount':
-      incl      => $fileserver_conf,
-      lens      => 'PuppetFileserver.lns',
-      load_path => '/opt/puppet/share/augeas/lenses/dist',
-      changes   => [
-        "set /files/${fileserver_conf}/hedgehog_ca/path ${hedgehoog_ca_path}",
-        "set /files/${fileserver_conf}/hedgehog_ca/allow *",
-      ],
-    }
   }
   service { $service:
     ensure => running,
     enable => true,
-  }
-  @@nagios_service{ "${::fqdn}-PUPPET_ENV":
-    ensure              => $nagios_ensure,
-    use                 => 'generic-service',
-    host_name           => $::fqdn,
-    service_description => 'PUPPET_ENV',
-    check_command       => 'check_nrpe!check_puppet_environment',
-  }
-  @@nagios_service{ "${::fqdn}-PUPPET_LASTRUN":
-    ensure              => $nagios_ensure,
-    use                 => 'generic-service',
-    host_name           => $::fqdn,
-    service_description => 'PUPPET_LASTRUN',
-    check_command       => 'check_nrpe!check_puppet_lastrun',
   }
 }

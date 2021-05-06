@@ -11,8 +11,6 @@ describe 'puppet_conf' do
       # puppet_state_dir: nil,
       # puppet_master: nil,
       # dns_alt_names: nil,
-      # hedgehoog_ca_path: nil,
-      # enable_nagios: nil,
       environment_override: 'production',
     }
   end
@@ -102,21 +100,10 @@ describe 'puppet_conf' do
         it { is_expected.not_to contain_cron('puppet_conf: check puppetdb') }
         it { is_expected.not_to contain_ini_setting('puppet_master_certname') }
         it { is_expected.not_to contain_file(environments_path) }
-        it { is_expected.not_to contain_augeas('fileserver ca mount') }
         it do
           is_expected.to contain_service('puppet').with(
             ensure: 'running',
             enable: true,
-          )
-        end
-        it do
-          is_expected.not_to contain_nagios_service(
-            'foobar.example.com-PUPPET_ENV',
-          )
-        end
-        it do
-          is_expected.not_to contain_nagios_service(
-            'foobar.example.com-PUPPET_LASTRUN',
           )
         end
       end
@@ -209,17 +196,6 @@ describe 'puppet_conf' do
               value: 'foobar.example.com',
             )
           end
-          it do
-            is_expected.to contain_augeas('fileserver ca mount').with(
-              incl: "#{confdir}/fileserver.conf",
-              lens: 'PuppetFileserver.lns',
-              load_path: '/opt/puppet/share/augeas/lenses/dist',
-              changes: [
-                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/path #{environments_path}/hedgehog_ca_master/ca",
-                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/allow *",
-              ],
-            )
-          end
         end
         context 'dns_alt_names' do
           before(:each) { params.merge!(dns_alt_names: ['foo', 'bar']) }
@@ -228,54 +204,6 @@ describe 'puppet_conf' do
             is_expected.to contain_ini_setting('puppet_dns_alt_names').with(
               setting: 'dns_alt_names',
               value: 'foo,bar',
-            )
-          end
-        end
-        context 'hedgehoog_ca_path' do
-          before(:each) do
-            params.merge!(
-              hedgehoog_ca_path: '/foo/bar',
-              puppet_master: true,
-            )
-          end
-          it { is_expected.to compile }
-          it do
-            is_expected.to contain_augeas('fileserver ca mount').with(
-              incl: "#{confdir}/fileserver.conf",
-              lens: 'PuppetFileserver.lns',
-              load_path: '/opt/puppet/share/augeas/lenses/dist',
-              changes: [
-                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/path /foo/bar",
-                "set /files/#{confdir}/fileserver.conf/hedgehog_ca/allow *",
-              ],
-            )
-          end
-        end
-        context 'enable_nagios' do
-          before(:each) { params.merge!(enable_nagios: true) }
-          subject { exported_resources }
-
-          it { is_expected.to compile }
-          it do
-            is_expected.to contain_nagios_service(
-              'foobar.example.com-PUPPET_ENV',
-            ).with(
-              ensure: 'present',
-              use: 'generic-service',
-              host_name: 'foobar.example.com',
-              service_description: 'PUPPET_ENV',
-              check_command: 'check_nrpe!check_puppet_environment',
-            )
-          end
-          it do
-            is_expected.to contain_nagios_service(
-              'foobar.example.com-PUPPET_LASTRUN',
-            ).with(
-              ensure: 'present',
-              use: 'generic-service',
-              host_name: 'foobar.example.com',
-              service_description: 'PUPPET_LASTRUN',
-              check_command: 'check_nrpe!check_puppet_lastrun',
             )
           end
         end
@@ -320,14 +248,6 @@ describe 'puppet_conf' do
         end
         context 'dns_alt_names' do
           before(:each) { params.merge!(dns_alt_names: true) }
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-        context 'hedgehoog_ca_path' do
-          before(:each) { params.merge!(hedgehoog_ca_path: true) }
-          it { is_expected.to raise_error(Puppet::Error) }
-        end
-        context 'enable_nagios' do
-          before(:each) { params.merge!(enable_nagios: 'foobar') }
           it { is_expected.to raise_error(Puppet::Error) }
         end
         context 'environment_override' do
