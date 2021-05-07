@@ -38,11 +38,6 @@ class puppet_conf (
   user {$owner:
     ensure => present,
   }
-  file {$puppet_conf:
-    owner => $owner,
-    group => $group,
-    mode  => '0644',
-  }
   file {'/var/puppet/facts':
     owner => $owner,
     group => $group,
@@ -102,6 +97,12 @@ class puppet_conf (
       section => 'master',
       setting => 'certname',
       value   => $::fqdn,
+    }
+  } else {
+    file {$puppet_conf:
+      owner => $owner,
+      group => $group,
+      mode  => '0644',
     }
   }
   service { $service:
