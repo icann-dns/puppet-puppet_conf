@@ -1,21 +1,12 @@
-# @summary
-#   conifigure puppet for master and agent
-# @param owner
-#   the owner of the puppet files and directories
-# @param group
-#   the group of the puppet files and directories
-# @param service
-#   the name of the puppet service
-# @param confdir
-#   the location of the puppet configueration
-# @param puppet_state_dir
-#   the location of the puppet state files
-# @param puppet_master
-#   indicates if the server is a puppet master
-# @param dns_alt_names
-#   Array of alternet DNS names to add to the csr
-# @param environment_override
-#   an environment to explicitly set the node to
+# @summary configure puppet for master and agent
+# @param owner the owner of the puppet files and directories
+# @param group the group of the puppet files and directories
+# @param service the name of the puppet service
+# @param confdir the location of the puppet configuration
+# @param puppet_state_dir the location of the puppet state files
+# @param puppet_master indicates if the server is a puppet master
+# @param dns_alt_names Array of alternet DNS names to add to the csr
+# @param environment_override an environment to explicitly set the node to
 #
 class puppet_conf (
   String                         $owner,
@@ -63,12 +54,12 @@ class puppet_conf (
   ini_setting {
     'puppet_conf_certname':
       setting => 'certname',
-      value   => $::fqdn;
+      value   => $facts['networking']['fqdn'];
   }
-  if ! empty($dns_alt_names) {
+  unless $dns_alt_names.empty() {
     ini_setting {'puppet_dns_alt_names':
       setting => 'dns_alt_names',
-      value   => join($dns_alt_names, ','),
+      value   => $dns_alt_names.join(','),
     }
   }
   file {'/usr/local/bin/kick_puppet':
@@ -96,7 +87,7 @@ class puppet_conf (
     ini_setting {'puppet_master_certname':
       section => 'master',
       setting => 'certname',
-      value   => $::fqdn,
+      value   => $facts['networking']['fqdn'],
     }
   } else {
     file {$puppet_conf:
