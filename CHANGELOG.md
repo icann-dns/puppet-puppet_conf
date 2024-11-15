@@ -1,3 +1,6 @@
+## Release 0.5.0
+* drop legacy facts
+
 ## Release 0.4.0
 * Remove nagios and hedgehog pieces
 
