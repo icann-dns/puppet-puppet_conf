@@ -5,19 +5,21 @@
 # @param confdir the location of the puppet configuration
 # @param puppet_state_dir the location of the puppet state files
 # @param puppet_master indicates if the server is a puppet master
+# @param include_legacy_facts enable legacy facts
 # @param dns_alt_names Array of alternet DNS names to add to the csr
 # @param environment_override an environment to explicitly set the node to
 #
 class puppet_conf (
-  String                         $owner,
-  String                         $group,
-  String                         $service,
-  Stdlib::Absolutepath           $confdir,
-  Stdlib::Absolutepath           $puppet_state_dir,
-  Boolean                        $puppet_master,
-  Optional[Array[Stdlib::Fqdn]]  $dns_alt_names,
-  Stdlib::Absolutepath           $environments_path,
-  Optional[String]               $environment_override,
+  String                         $owner                = 'pe-puppet',
+  String                         $group                = 'pe-puppet',
+  String                         $service              = 'puppet',
+  Stdlib::Absolutepath           $confdir              = '/etc/puppetlabs/puppet',
+  Stdlib::Absolutepath           $puppet_state_dir     = '/opt/puppetlabs/puppet/cache/state',
+  Boolean                        $puppet_master        = false,
+  Boolean                        $include_legacy_facts = false,
+  Optional[Array[Stdlib::Fqdn]]  $dns_alt_names        = [] ,
+  Stdlib::Absolutepath           $environments_path    = '/etc/puppetlabs/code/environments',
+  Optional[String]               $environment_override = undef,
 ) {
 
   $_environment = $environment_override ? {
@@ -40,24 +42,31 @@ class puppet_conf (
     mode  => '0644',
   }
   Ini_setting {
-    ensure  => present,
-    path    => $puppet_conf,
-    section => 'main',
-    notify  => Service[$service],
   }
   # update config
-  ini_setting {'puppet_conf_agent_environment':
-    setting => 'environment',
-    value   => $_environment,
-    section => 'agent',
-  }
   ini_setting {
+    default:
+      ensure  => present,
+      path    => $puppet_conf,
+      section => 'main',
+      section => 'agent',
+      notify  => Service[$service];
+    'puppet_conf_agent_environment':
+      setting => 'environment',
+      value   => $_environment;
+    'puppet_conf_legacy_facts':
+      setting => 'include_legacy_facts'
+      value   => String($include_legacy_facts);
     'puppet_conf_certname':
       setting => 'certname',
+      section => 'main',
       value   => $facts['networking']['fqdn'];
   }
   unless $dns_alt_names.empty() {
     ini_setting {'puppet_dns_alt_names':
+      ensure  => present,
+      path    => $puppet_conf,
+      section => 'main',
       setting => 'dns_alt_names',
       value   => $dns_alt_names.join(','),
     }
@@ -85,16 +94,17 @@ class puppet_conf (
         minute  => 20;
     }
     ini_setting {'puppet_master_certname':
+      ensure  => present,
+      path    => $puppet_conf,
       section => 'master',
       setting => 'certname',
       value   => $facts['networking']['fqdn'],
     }
-  } else {
-    file {$puppet_conf:
-      owner => $owner,
-      group => $group,
-      mode  => '0644',
-    }
+  }
+  file {$puppet_conf:
+    owner => $owner,
+    group => $group,
+    mode  => '0644',
   }
   service { $service:
     ensure => running,
