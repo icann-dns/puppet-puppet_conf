@@ -1,5 +1,6 @@
 ## Release 0.6.0
 * Add option for include_legacy_facts
+* and move to modulesync
 
 ## Release 0.5.0
 * drop legacy facts
