@@ -1,33 +1,38 @@
 stages:
   - lint
-  - rubocop
-  - rspec
-  - beaker_apply
-  - beaker_agent
+  - unit
 
-variables:
-  BEAKER_PUPPET_COLLECTION: puppet5
-  PUPPET_GEM_VERSION: "~> 5.0"
-
-before_script:
-  - ruby -v
-  - bundle --version
-  - gem --version
-  - rm Gemfile.lock || true
-  - bundle install --path=${BUNDLE_PATH:-vendor/bundle}
+.ruby_job_template: &ruby_template
+  tags:
+  - linting
+  cache:
+    - key:
+        files:
+          - Gemfile
+      paths:
+        - vendor/bundle
+        - Gemfile.lock
+  before_script:
+    - ruby -v
+    - bundle --version
+    - gem --version
+    - bundle config set --local path 'vendor/bundle'
+    - bundle install
 
 lint:
-  stage: rspec
+  <<: *ruby_template
+  stage: lint
   script:
     - bundle exec rake validate lint
 
 rubocop:
-  stage: rubocop
+  <<: *ruby_template
+  stage: lint
   script:
     - bundle exec rake rubocop
 
 rspec:
-  stage: rspec
+  <<: *ruby_template
+  stage: unit
   script:
     - bundle exec rake spec
-
