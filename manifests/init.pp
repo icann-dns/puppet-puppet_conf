@@ -55,7 +55,7 @@ class puppet_conf (
       setting => 'environment',
       value   => $_environment;
     'puppet_conf_legacy_facts':
-      setting => 'include_legacy_facts'
+      setting => 'include_legacy_facts',
       value   => String($include_legacy_facts);
     'puppet_conf_certname':
       setting => 'certname',
