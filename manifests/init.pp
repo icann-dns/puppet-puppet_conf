@@ -17,11 +17,10 @@ class puppet_conf (
   Stdlib::Absolutepath $puppet_state_dir     = '/opt/puppetlabs/puppet/cache/state',
   Boolean              $puppet_master        = false,
   Boolean              $include_legacy_facts = false,
+  String               $environment_override = $server_facts['environment'],
   Array[Stdlib::Fqdn]  $dns_alt_names        = [],
-  Optional[String]     $environment_override = undef,
 ) {
 
-  $_environment = $environment_override.lest || { $::environment }
   $puppet_conf     = "${confdir}/puppet.conf"
   $fileserver_conf = "${confdir}/fileserver.conf"
   user { $owner:
@@ -46,7 +45,7 @@ class puppet_conf (
       notify  => Service[$service];
     'puppet_conf_agent_environment':
       setting => 'environment',
-      value   => $_environment;
+      value   => $environment;
     'puppet_conf_legacy_facts':
       setting => 'include_legacy_facts',
       value   => String($include_legacy_facts);
