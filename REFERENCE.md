@@ -27,7 +27,6 @@ The following parameters are available in the `puppet_conf` class:
 * [`include_legacy_facts`](#-puppet_conf--include_legacy_facts)
 * [`dns_alt_names`](#-puppet_conf--dns_alt_names)
 * [`environment_override`](#-puppet_conf--environment_override)
-* [`environments_path`](#-puppet_conf--environments_path)
 
 ##### <a name="-puppet_conf--owner"></a>`owner`
 
@@ -87,7 +86,7 @@ Default value: `false`
 
 ##### <a name="-puppet_conf--dns_alt_names"></a>`dns_alt_names`
 
-Data type: `Optional[Array[Stdlib::Fqdn]]`
+Data type: `Array[Stdlib::Fqdn]`
 
 Array of alternet DNS names to add to the csr
 
@@ -100,12 +99,4 @@ Data type: `Optional[String]`
 an environment to explicitly set the node to
 
 Default value: `undef`
-
-##### <a name="-puppet_conf--environments_path"></a>`environments_path`
-
-Data type: `Stdlib::Absolutepath`
-
-
-
-Default value: `'/etc/puppetlabs/code/environments'`
 
