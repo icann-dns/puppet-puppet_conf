@@ -98,5 +98,5 @@ Data type: `String`
 
 an environment to explicitly set the node to
 
-Default value: `$facts['environment']`
+Default value: `$::environment`
 
