@@ -45,7 +45,7 @@ class puppet_conf (
       notify  => Service[$service];
     'puppet_conf_agent_environment':
       setting => 'environment',
-      value   => $environment;
+      value   => $environment_override;
     'puppet_conf_legacy_facts':
       setting => 'include_legacy_facts',
       value   => String($include_legacy_facts);
