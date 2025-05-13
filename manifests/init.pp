@@ -20,9 +20,9 @@ class puppet_conf (
   String               $environment_override = $server_facts['environment'],
   Array[Stdlib::Fqdn]  $dns_alt_names        = [],
 ) {
-
   $puppet_conf     = "${confdir}/puppet.conf"
   $fileserver_conf = "${confdir}/fileserver.conf"
+
   user { $owner:
     ensure => present,
   }
