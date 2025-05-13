@@ -94,9 +94,9 @@ Default value: `[]`
 
 ##### <a name="-puppet_conf--environment_override"></a>`environment_override`
 
-Data type: `Optional[String]`
+Data type: `String`
 
 an environment to explicitly set the node to
 
-Default value: `undef`
+Default value: `$server_facts['environment']`
 
