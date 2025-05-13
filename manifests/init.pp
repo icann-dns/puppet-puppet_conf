@@ -17,7 +17,7 @@ class puppet_conf (
   Stdlib::Absolutepath $puppet_state_dir     = '/opt/puppetlabs/puppet/cache/state',
   Boolean              $puppet_master        = false,
   Boolean              $include_legacy_facts = false,
-  String               $environment_override = $facts['environment'],
+  String               $environment_override = $::environment,  # lint:ignore:top_scope_facts
   Array[Stdlib::Fqdn]  $dns_alt_names        = [],
 ) {
   $puppet_conf     = "${confdir}/puppet.conf"
