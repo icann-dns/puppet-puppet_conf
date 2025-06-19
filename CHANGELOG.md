@@ -1,3 +1,6 @@
+## Release 0.6.1
+* change default permissions on puppet.conf to be root:root
+
 ## Release 0.6.0
 * Add option for include_legacy_facts
 * and move to modulesync
