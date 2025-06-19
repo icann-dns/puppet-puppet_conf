@@ -94,8 +94,8 @@ class puppet_conf (
     }
   }
   file { $puppet_conf:
-    owner => $owner,
-    group => $group,
+    owner => 'root',
+    group => 'root',
     mode  => '0644',
   }
   service { $service:
