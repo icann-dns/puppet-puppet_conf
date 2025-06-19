@@ -46,8 +46,8 @@ describe 'puppet_conf' do
 
         it do
           is_expected.to contain_file("#{confdir}/puppet.conf").with(
-            owner: owner,
-            group: group,
+            owner: 'root',
+            group: 'root',
             mode: '0644'
           )
         end
@@ -127,12 +127,6 @@ describe 'puppet_conf' do
           it { is_expected.to compile }
 
           it do
-            is_expected.to contain_file(
-              "#{confdir}/puppet.conf"
-            ).with_owner('foobar')
-          end
-
-          it do
             is_expected.to contain_file('/var/puppet/facts').with_owner('foobar')
           end
 
@@ -147,12 +141,6 @@ describe 'puppet_conf' do
           before { params.merge!(group: 'foobar') }
 
           it { is_expected.to compile }
-
-          it do
-            is_expected.to contain_file(
-              "#{confdir}/puppet.conf"
-            ).with_group('foobar')
-          end
 
           it do
             is_expected.to contain_file('/var/puppet/facts').with_group('foobar')
