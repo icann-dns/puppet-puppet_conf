@@ -1,3 +1,6 @@
+## Release 0.7.0
+* Add ability to configure reports
+
 ## Release 0.6.1
 * change default permissions on puppet.conf to be root:root
 
