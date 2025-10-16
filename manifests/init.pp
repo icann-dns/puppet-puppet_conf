@@ -8,6 +8,7 @@
 # @param include_legacy_facts enable legacy facts
 # @param dns_alt_names Array of alternet DNS names to add to the csr
 # @param environment_override an environment to explicitly set the node to
+# @param reports an array of report processors to enable
 #
 class puppet_conf (
   String               $owner                = 'pe-puppet',
@@ -19,6 +20,7 @@ class puppet_conf (
   Boolean              $include_legacy_facts = false,
   String               $environment_override = $::environment,  # lint:ignore:top_scope_facts
   Array[Stdlib::Fqdn]  $dns_alt_names        = [],
+  Array[String]        $reports              = ['puppetdb'],
 ) {
   $puppet_conf     = "${confdir}/puppet.conf"
   $fileserver_conf = "${confdir}/fileserver.conf"
@@ -49,6 +51,9 @@ class puppet_conf (
     'puppet_conf_legacy_facts':
       setting => 'include_legacy_facts',
       value   => String($include_legacy_facts);
+    'puppet_conf_report':
+      setting => 'report',
+      value   => 'true';
     'puppet_conf_certname':
       setting => 'certname',
       section => 'main',
@@ -85,12 +90,20 @@ class puppet_conf (
         command => 'service pe-puppetdb status > /dev/null || service pe-puppetdb restart',
         minute  => 20;
     }
-    ini_setting { 'puppet_master_certname':
-      ensure  => present,
-      path    => $puppet_conf,
-      section => 'master',
-      setting => 'certname',
-      value   => $facts['networking']['fqdn'],
+    ini_setting {
+      default:
+        ensure  => present,
+        path    => $puppet_conf,
+        section => 'master';
+      'puppet_master_certname':
+        setting => 'certname',
+        value   => $facts['networking']['fqdn'];
+      'puppet_conf_report_master':
+        setting => 'report',
+        value   => 'true';
+      'puppet_conf_reports':
+        setting => 'reports',
+        value   => $reports.join(',');
     }
   }
   file { $puppet_conf:
